@@ -3,14 +3,14 @@
 require_relative "lib/bigcommerce/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "bigcommerce-api"
+  spec.name = "bigcommerce-ruby"
   spec.version = Bigcommerce::VERSION
   spec.authors = ["Alvaro"]
   spec.email = ["aalvaaro@users.noreply.github.com"]
 
   spec.summary = "Ruby client for the BigCommerce REST Management API"
   spec.description = "A lightweight Ruby wrapper for the BigCommerce V2 Orders API with support for orders, shipments, products, and more."
-  spec.homepage = "https://github.com/AAlvAAro/bigcommerce-api"
+  spec.homepage = "https://github.com/AAlvAAro/bigcommerce-ruby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1"
 

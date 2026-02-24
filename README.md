@@ -1,4 +1,6 @@
-# bigcommerce-api
+# bigcommerce-ruby
+
+[![Gem Version](https://badge.fury.io/rb/bigcommerce-ruby.svg)](https://rubygems.org/gems/bigcommerce-ruby)
 
 A Ruby gem for the BigCommerce REST Management API. Thin, idiomatic, and built on Faraday — no magic, just clean API access with automatic retries and proper error handling.
 
@@ -6,11 +8,11 @@ A Ruby gem for the BigCommerce REST Management API. Thin, idiomatic, and built o
 
 ```ruby
 # Gemfile
-gem "bigcommerce-api"
+gem "bigcommerce-ruby"
 ```
 
 ```
-gem install bigcommerce-api
+gem install bigcommerce-ruby
 ```
 
 ## Configuration
