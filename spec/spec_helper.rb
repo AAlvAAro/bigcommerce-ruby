@@ -26,10 +26,13 @@ end
 
 STORE_HASH = "test_store"
 ACCESS_TOKEN = "test_token"
-BASE_URL = "https://api.bigcommerce.com/stores/#{STORE_HASH}/v2"
+BASE_URL_V2 = "https://api.bigcommerce.com/stores/#{STORE_HASH}/v2"
+BASE_URL_V3 = "https://api.bigcommerce.com/stores/#{STORE_HASH}/v3"
+BASE_URL = BASE_URL_V2
 
-def stub_api(method, path, status: 200, body: nil, query: nil)
-  stub = stub_request(method, "#{BASE_URL}#{path}")
+def stub_api(method, path, status: 200, body: nil, query: nil, api_version: :v2)
+  base = api_version == :v3 ? BASE_URL_V3 : BASE_URL_V2
+  stub = stub_request(method, "#{base}#{path}")
   stub = stub.with(query: query) if query
   stub.to_return(
     status: status,

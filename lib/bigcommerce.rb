@@ -16,6 +16,10 @@ require_relative "bigcommerce/resources/order_taxes"
 require_relative "bigcommerce/resources/order_messages"
 require_relative "bigcommerce/resources/order_fees"
 require_relative "bigcommerce/resources/order_statuses"
+require_relative "bigcommerce/resources/abandoned_carts"
+require_relative "bigcommerce/resources/abandoned_cart_settings"
+require_relative "bigcommerce/resources/inventory_items"
+require_relative "bigcommerce/resources/inventory_adjustments"
 
 module Bigcommerce
   class << self

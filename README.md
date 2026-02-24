@@ -1,16 +1,13 @@
-# BigCommerce API
+# bigcommerce-api
 
-A lightweight Ruby client for the BigCommerce REST Management API (V2 Orders).
+A Ruby gem for the BigCommerce REST Management API. Thin, idiomatic, and built on Faraday — no magic, just clean API access with automatic retries and proper error handling.
 
 ## Installation
 
-Add to your Gemfile:
-
 ```ruby
+# Gemfile
 gem "bigcommerce-api"
 ```
-
-Or install directly:
 
 ```
 gem install bigcommerce-api
@@ -18,7 +15,7 @@ gem install bigcommerce-api
 
 ## Configuration
 
-### Global configuration
+**Global** (recommended for Rails apps):
 
 ```ruby
 Bigcommerce.configure do |config|
@@ -31,7 +28,7 @@ end
 client = Bigcommerce.client
 ```
 
-### Per-client configuration
+**Per-client** (useful for multi-tenant apps):
 
 ```ruby
 client = Bigcommerce::Client.new(
@@ -45,15 +42,15 @@ client = Bigcommerce::Client.new(
 ### Orders
 
 ```ruby
-# List orders (with filtering and pagination)
+# List with filtering, sorting, and pagination
 client.orders.list(page: 1, limit: 25)
 client.orders.list(status_id: 11, min_date_created: "2025-01-01")
-client.orders.list(sort: "date_created", customer_id: 42)
+client.orders.list(sort: "date_created", direction: "desc", customer_id: 42)
 
-# Get a single order
+# Single order
 client.orders.find(100)
 
-# Create an order
+# Create
 client.orders.create(
   customer_id: 1,
   billing_address: {
@@ -72,13 +69,13 @@ client.orders.create(
   ]
 )
 
-# Update an order
+# Update
 client.orders.update(100, status_id: 2, staff_notes: "Shipped today")
 
-# Archive an order
+# Archive
 client.orders.archive(100)
 
-# Get order count
+# Count
 client.orders.count
 client.orders.count(status_id: 11)
 ```
@@ -158,42 +155,53 @@ client.order_statuses.list
 client.order_statuses.find(1)
 ```
 
-## Response Object
+## Response
 
-All methods return a `Bigcommerce::Response` with:
+Every method returns a `Bigcommerce::Response`:
 
 ```ruby
 response = client.orders.list
 
-response.body       # Parsed JSON (Hash/Array with symbol keys)
-response.status     # HTTP status code
-response.headers    # Response headers
-response.success?   # true for 2xx responses
+response.body             # Parsed JSON — Hash or Array with symbol keys
+response.status           # HTTP status code
+response.headers          # Response headers
+response.success?         # true for 2xx
 response.rate_limit       # Remaining API calls
-response.rate_limit_reset # Reset time in ms
+response.rate_limit_reset # Time until reset (ms)
 ```
 
 ## Error Handling
 
+Errors map directly to HTTP status codes:
+
 ```ruby
 begin
   client.orders.find(999)
-rescue Bigcommerce::NotFoundError => e
+rescue Bigcommerce::NotFoundError
   puts "Order not found"
-rescue Bigcommerce::AuthenticationError => e
-  puts "Bad credentials"
+rescue Bigcommerce::AuthenticationError
+  puts "Bad credentials — check your access token"
 rescue Bigcommerce::RateLimitError => e
   puts "Rate limited, retry after #{e.response.rate_limit_reset}ms"
 rescue Bigcommerce::UnprocessableEntityError => e
   puts "Validation error: #{e.message}"
-rescue Bigcommerce::ServerError => e
+rescue Bigcommerce::ServerError
   puts "BigCommerce server error"
 rescue Bigcommerce::ApiError => e
   puts "API error #{e.status}: #{e.message}"
 end
 ```
 
-Built-in retry with exponential backoff handles 429 and 5xx responses automatically (3 retries).
+| Error class | HTTP status |
+|---|---|
+| `AuthenticationError` | 401 |
+| `NotFoundError` | 404 |
+| `UnprocessableEntityError` | 422 |
+| `RateLimitError` | 429 |
+| `ServerError` | 5xx |
+| `ApiError` | anything else |
+
+Requests that hit 429 or 5xx are automatically retried up to 3 times with exponential backoff. On a 429, the gem reads the `x-rate-limit-time-reset-ms` header and sleeps accordingly before retrying.
 
 ## Development
 

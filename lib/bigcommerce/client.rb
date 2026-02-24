@@ -49,5 +49,21 @@ module Bigcommerce
     def order_statuses
       @order_statuses ||= Resources::OrderStatuses.new(connection)
     end
+
+    def abandoned_carts
+      @abandoned_carts ||= Resources::AbandonedCarts.new(connection)
+    end
+
+    def abandoned_cart_settings
+      @abandoned_cart_settings ||= Resources::AbandonedCartSettings.new(connection)
+    end
+
+    def inventory_items
+      @inventory_items ||= Resources::InventoryItems.new(connection)
+    end
+
+    def inventory_adjustments
+      @inventory_adjustments ||= Resources::InventoryAdjustments.new(connection)
+    end
   end
 end

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 (2026-02-24)
+
+- Abandoned cart settings resource
+- Abandoned carts resource
+- Inventory adjustments resource
+- Inventory items resource
+
 ## 0.1.0 (2026-02-17)
 
 - Initial release

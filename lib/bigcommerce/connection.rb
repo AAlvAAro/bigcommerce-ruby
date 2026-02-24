@@ -12,29 +12,26 @@ module Bigcommerce
       @config = config
     end
 
-    def get(path, params = {})
-      request(:get, path, params)
+    def get(path, params = {}, api_version: :v2)
+      request(:get, path, params, api_version: api_version)
     end
 
-    def post(path, body = {})
-      request(:post, path, body)
+    def post(path, body = {}, api_version: :v2)
+      request(:post, path, body, api_version: api_version)
     end
 
-    def put(path, body = {})
-      request(:put, path, body)
+    def put(path, body = {}, api_version: :v2)
+      request(:put, path, body, api_version: api_version)
     end
 
-    def delete(path, params = {})
-      request(:delete, path, params)
+    def delete(path, params = {}, api_version: :v2)
+      request(:delete, path, params, api_version: api_version)
     end
 
     private
 
-    def request(method, path, payload = {})
-      full_path = "#{base_url}#{path}"
-
-      response = connection.public_send(method) do |req|
-        req.url full_path
+    def request(method, path, payload = {}, api_version: :v2)
+      response = connection.run_request(method, "#{base_url(api_version)}#{path}", nil, nil) do |req|
         case method
         when :get, :delete
           req.params = payload if payload.any?
@@ -47,7 +44,7 @@ module Bigcommerce
     end
 
     def connection
-      @connection ||= Faraday.new(url: "https://api.bigcommerce.com") do |f|
+      @connection ||= Faraday.new do |f|
         f.request :retry, max: 3, interval: 0.5, backoff_factor: 2,
                           retry_statuses: [429, 500, 502, 503, 504],
                           retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
@@ -61,8 +58,8 @@ module Bigcommerce
       end
     end
 
-    def base_url
-      "#{BASE_URL}/#{@config.store_hash}/v2"
+    def base_url(api_version = :v2)
+      "#{BASE_URL}/#{@config.store_hash}/#{api_version}"
     end
 
     def handle_response(faraday_response)
